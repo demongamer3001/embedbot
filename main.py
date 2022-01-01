@@ -270,7 +270,11 @@ async def on_message(message):
                 webhook = utils.get(webhook, name = "Embed Bot")
                 if webhook is None:
                     webhook = await message.channel.create_webhook(name = "Embed Bot")
-                await webhook.send(username=message.author.display_name, avatar_url=message.author.avatar_url, content=messagen)
+                if not message.author.guild_permissions.mention_everyone:
+                    perms=discord.AllowedMentions(everyone=False, roles=False)
+                else:
+                    perms=discord.AllowedMentions(everyone=True, roles=False)
+                await webhook.send(username=message.author.display_name, avatar_url=message.author.avatar_url, content=messagen, allowed_mentions=perms)
                 return
 
     await client.process_commands(message)
@@ -316,5 +320,5 @@ async def on_command_error(ctx, error):
 @client.event
 async def on_guild_remove(guild):
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help in {len(client.guilds)} servers'))
-
+    
 client.run(my_secret)
