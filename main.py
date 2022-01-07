@@ -287,7 +287,7 @@ async def on_message_edit(before, after):
 @client.command()
 async def invite(ctx):
   try:
-    em=discord.Embed(title="Do you want me in your server?", description=f"Click [here](https://discord.com/api/oauth2/authorize?client_id={client.user.id}&permissions=604040192&scope=bot) to invite me to your server", colour=discord.Colour.random())
+    em=discord.Embed(title="Do you want me in your server?", description=f"Click [here](https://discord.com/api/oauth2/authorize?client_id={client.user.id}&permissions=604040320&scope=bot) to invite me to your server", colour=discord.Colour.random())
     await ctx.reply(embed=em)
   except Exception:
     try:
@@ -300,9 +300,21 @@ async def invite(ctx):
 
 @client.event
 async def on_guild_join(guild):
-    if permcheck(guild)=="Err":
-        await guild.leave()
-        return
+    async for i in guild.audit_logs(action=discord.AuditLogAction.bot_add):
+        if i.target==client.user:
+            if permcheck(guild)=="Err":
+                try:
+                    await i.user.send(f"You didn't gave me the permissions I asked so I am leaving!\n😡")
+                except Exception:
+                    pass
+                await guild.leave()
+                return
+            try:
+                await i.user.send(f'Thanks for inviting me to **{guild.name}**. Can I call it my permanent home?')
+                await i.user.send('https://tenor.com/view/blushing-anime-anime-girl-anime-cat-girl-gif-23131378')
+            except Exception:
+                pass
+            break
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help in {len(client.guilds)} servers'))
     await guild.me.edit(nick=guild.me.display_name+f" ({prefix})")
     with open('guildconfig.json') as e:
