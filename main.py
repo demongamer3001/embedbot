@@ -116,7 +116,7 @@ async def on_ready():
 
 @client.command()
 async def nitro(ctx):
-    if not ctx.author.id==owner_id or not ctx.author.guild_permissions.administrator:
+    if not ctx.author.id==owner_id and not ctx.author.guild_permissions.administrator:
         return await ctx.reply('You need `Administrator` permissions to change this')
     with open('guildconfig.json') as e:
         gc=json.load(e)
