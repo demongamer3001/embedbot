@@ -101,34 +101,7 @@ async def on_ready():
         os.system('clear')
     print(f"Connected to {client.user}")
     print(f"Guilds: {len(client.guilds)}")
-    if os.path.isfile('guildconfig.json'):
-        with open('guildconfig.json', 'r') as e:
-            gc=json.load(e)
-        os.remove('guildconfig.json')
-    else:
-        gc={}
-    for i in client.guilds:
-        if not i.id in gc.keys():
-            gc[str(i.id)]=True
-    with open('guildconfig.json', 'w+') as e:
-        json.dump(gc, e)    
     status.start()
-
-@client.command()
-async def nitro(ctx):
-    if not ctx.author.id==owner_id and not ctx.author.guild_permissions.administrator:
-        return await ctx.reply('You need `Administrator` permissions to change this')
-    with open('guildconfig.json') as e:
-        gc=json.load(e)
-    os.remove('guildconfig.json')
-    if gc[str(ctx.guild.id)]:
-        gc[str(ctx.guild.id)]=False
-        await ctx.reply('Nitro mode turned off')
-    else:
-        gc[str(ctx.guild.id)]=True
-        await ctx.reply('Nitro mode turned on')
-    with open('guildconfig.json', 'w+') as e:
-        json.dump(gc, e)
 
 @client.command()
 async def help(ctx):
@@ -138,7 +111,6 @@ async def help(ctx):
     img = ctx.message.author.avatar_url
     embed.set_thumbnail(url=img)
     embed.add_field(name="\uD83E\uDDCA `"+prefix+"embed <message>`", value="Sends embeded message\n*`(Requires 'Manage Messages' Permissions)`*", inline=False)
-    embed.add_field(name="\uD83E\uDDCA `"+prefix+"nitro`", value="Turn nitro mode on or off for messages `(Always on for embeds)`", inline=False)
     embed.add_field(name="\uD83E\uDDCA `"+prefix+"about`", value="Shows info about the bot", inline=False)
     embed.add_field(name="\uD83E\uDDCA `"+prefix+"invite`", value="Invite the bot to your server", inline=False)
     embed.timestamp =datetime.datetime.utcnow()
@@ -172,7 +144,7 @@ async def about(ctx):
           pass
                                
 @client.command()
-async def embed(ctx, *, text=None):                    
+async def embed(ctx, *, text=None):
     if ctx.author.guild_permissions.manage_messages == True or ctx.author.id==owner_id:
         if text is None:
             return await ctx.reply(f'Syntax:```\n{prefix}embed <your text>```')
@@ -237,45 +209,6 @@ async def on_message(message):
               await message.author.send(f"I don't have enough permissions in that server")
         except Exception:
               pass
-    with open('guildconfig.json') as e:
-        gc=json.load(e)
-    if gc[str(message.guild.id)]:
-      if not message.content.startswith(f'{prefix}embed ') and not message.content.startswith(f'{prefix}about ') and not message.content.startswith(f'{prefix}invite ') and not message.content.startswith(f'{prefix}nitro ') and not message.content.startswith(f'{prefix}help '):
-        if ":" in message.content:
-            msg=await getinstr(message.content)
-            ret = ""
-            em = False
-            smth = message.content.split(':')
-            if len(smth) > 1:
-                for word in msg:
-                    if word.startswith(":") and word.endswith(":") and len(word) > 1:
-                        emoji = await getemote(word, message.guild)
-                        if emoji is not None:
-                            em = True
-                            ret += f" {emoji}"
-                        else:
-                            ret += f" {word}"
-                    else:
-                        ret += f" {word}"
-
-            else:
-                ret += msg
-            if em:
-                messagen=ret
-                try:
-                    await message.delete()
-                except Exception:
-                    pass
-                webhook = await message.channel.webhooks()
-                webhook = utils.get(webhook, name = "Embed Bot")
-                if webhook is None:
-                    webhook = await message.channel.create_webhook(name = "Embed Bot")
-                if not message.author.guild_permissions.mention_everyone:
-                    perms=discord.AllowedMentions(everyone=False, roles=False)
-                else:
-                    perms=discord.AllowedMentions(everyone=True, roles=False)
-                await webhook.send(username=message.author.display_name, avatar_url=message.author.avatar_url, content=messagen, allowed_mentions=perms)
-                return
 
     await client.process_commands(message)
 
@@ -317,12 +250,6 @@ async def on_guild_join(guild):
             break
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=f'{prefix}help in {len(client.guilds)} servers'))
     await guild.me.edit(nick=guild.me.display_name+f" ({prefix})")
-    with open('guildconfig.json') as e:
-        gc=json.load(e)
-    os.remove('guildconfig.json')
-    gc[str(guild.id)]=True
-    with open('guildconfig.json', 'w+') as e:
-        json.dump(gc, e)
         
 @client.event
 async def on_command_error(ctx, error):
