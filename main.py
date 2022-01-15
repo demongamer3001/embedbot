@@ -121,7 +121,7 @@ async def help(ctx):
       ctx.reply("I don't have enough permissions to work properly")
     except Exception:
           try:
-              await ctx.author.send(f"I don't have enough permissions in that server")
+              await ctx.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
           except Exception:
                 pass
 
@@ -139,13 +139,27 @@ async def about(ctx):
       await ctx.reply("I don't have enough permissions to work properly")
     except Exception:
       try:
-          await ctx.author.send(f"I don't have enough permissions in that server")
+          await ctx.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
       except Exception:
           pass
                                
 @client.command()
 async def embed(ctx, *, text=None):
     if ctx.author.guild_permissions.manage_messages == True or ctx.author.id==owner_id:
+        if not guild.me.guild_permissions.embed_links:
+            try:
+                await ctx.reply('I don\'t have enough permissions in this channel')
+            except Exception:
+                try:
+                    await ctx.author.send(f'I don\'t have enough permissions in {ctx.channel.mention}')
+                except Exception:
+                    try:
+                        await ctx.message.add_reactions('❌')
+                    except Exception:
+                        pass
+            finally:
+                return
+                
         if text is None:
             return await ctx.reply(f'Syntax:```\n{prefix}embed <your text>```')
         text=text.strip()
@@ -183,7 +197,7 @@ async def embed(ctx, *, text=None):
             await ctx.reply("I don't have enough permissions to work properly")
           except Exception:
             try:
-                await ctx.author.send(f"I don't have enough permissions in that server")
+                await ctx.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
             except Exception:
                 pass
     else:
@@ -191,7 +205,7 @@ async def embed(ctx, *, text=None):
           await ctx.reply("You cannot use me since you don't have the required permissions. Tehehe!")
         except Exception:
           try:
-              await ctx.author.send(f"I don't have enough permissions in that server")
+              await ctx.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
           except Exception:
                 pass
 @client.event
@@ -206,7 +220,7 @@ async def on_message(message):
         return await message.reply(embed=em)
       except Exception:
         try:
-              await message.author.send(f"I don't have enough permissions in that server")
+              await message.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
         except Exception:
               pass
 
@@ -227,7 +241,7 @@ async def invite(ctx):
       await ctx.reply("I don't have enough permissions to work properly")
     except Exception:
           try:
-              await ctx.author.send(f"I don't have enough permissions in that server")
+              await ctx.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
           except Exception:
                 pass
 
