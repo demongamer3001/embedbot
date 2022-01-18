@@ -132,7 +132,7 @@ async def about(ctx):
     if not owner is None:
         embed = discord.Embed(title="About", description=f"I am Embed Bot. I am made by {owner.mention}", colour = discord.Colour.random())
     else:
-        embed = discord.Embed(title="About", description="I am Embed Bot. I am made by **Βlank#8286**", colour = discord.Colour.random())
+        embed = discord.Embed(title="About", description="I am Embed Bot. I am made by **{await client.fetch_user(owner_id)}**", colour = discord.Colour.random())
     await ctx.reply(embed=embed)
   except Exception:
     try:
@@ -146,7 +146,7 @@ async def about(ctx):
 @client.command()
 async def embed(ctx, *, text=None):
     if ctx.author.guild_permissions.manage_messages == True or ctx.author.id==owner_id:
-        if not guild.me.guild_permissions.embed_links:
+        if not ctx.guild.me.guild_permissions.embed_links:
             try:
                 await ctx.reply('I don\'t have enough permissions in this channel')
             except Exception:
