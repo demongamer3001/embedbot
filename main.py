@@ -130,9 +130,9 @@ async def about(ctx):
   owner=utils.get(ctx.guild.members, id=owner_id)
   try:
     if not owner is None:
-        embed = discord.Embed(title="About", description=f"I am Embed Bot. I am made by {owner.mention}", colour = discord.Colour.random())
+        embed = discord.Embed(title="About me", description=f"I am Embed Bot. I am made by {owner.mention}. I will enable you to embed your message like a bot!\n\n**Nitro Mode:** Enables you to use animated emojis in the embed without nitro by typing `:emoji_name:` in your text!", colour = discord.Colour.random())
     else:
-        embed = discord.Embed(title="About", description=f"I am Embed Bot. I am made by **{await client.fetch_user(owner_id)}**", colour = discord.Colour.random())
+        embed = discord.Embed(title="About", description=f"I am Embed Bot. I am made by **{await client.fetch_user(owner_id)}**. I will enable you to embed your message like a bot!\n\n**Nitro Mode:** Enables you to use animated emojis in the embed without nitro by typing `:emoji_name:` in your text!", colour = discord.Colour.random())
     await ctx.reply(embed=embed)
   except Exception:
     try:
@@ -220,7 +220,7 @@ async def on_message(message):
         return await message.reply(embed=em)
       except Exception:
         try:
-              await message.author.send(f"I don't have enough permissions in "+ctx.channel.mention)
+              await message.author.send(f"I don't have enough permissions in "+message.channel.mention)
         except Exception:
               pass
 
