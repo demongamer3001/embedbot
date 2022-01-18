@@ -132,7 +132,7 @@ async def about(ctx):
     if not owner is None:
         embed = discord.Embed(title="About", description=f"I am Embed Bot. I am made by {owner.mention}", colour = discord.Colour.random())
     else:
-        embed = discord.Embed(title="About", description="I am Embed Bot. I am made by **{await client.fetch_user(owner_id)}**", colour = discord.Colour.random())
+        embed = discord.Embed(title="About", description=f"I am Embed Bot. I am made by **{await client.fetch_user(owner_id)}**", colour = discord.Colour.random())
     await ctx.reply(embed=embed)
   except Exception:
     try:
